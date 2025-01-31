@@ -9,7 +9,7 @@ class Plant:
         self.stock = init                # Nombre actuel de bouteilles pleines en stock
         self.refill = refill             # Nombre de bouteilles pouvant être remplies par jour
     
-    def remplir_bouteilles(self, quantite):
+    def remplir_bouteilles(self, quantite): #remplir un certain nombre de bouteilles jusqu’à la capacité de l’usine.
         remplissage = min(self.refill, quantite)
         self.stock += remplissage
         return remplissage
