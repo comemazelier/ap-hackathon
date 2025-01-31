@@ -54,6 +54,6 @@ class Camion:
         self._trajet.append(destination)
         self._temps_deplacement = duree
         
-    def  actualisation(self, t):
-        self._temps_deplacement = self._temps_deplacement - t
+    def  actualisation(self, dt):
+        self._temps_deplacement = self._temps_deplacement - dt
     
