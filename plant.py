@@ -9,3 +9,21 @@ class Plant:
         remplissage = min(self.refill, quantite)
         self.stock += remplissage
         return remplissage
+    
+    def modifier_stock(self, pleines=0, vides=0):
+      if pleines > 0:
+        espace_disponible = self.capacity - self.stock
+        ajout = min(pleines, espace_disponible)  # Ne pas dépasser la capacité
+        self.stock += ajout
+        message_pleines = f"{ajout} bouteilles pleines ajoutées."
+      elif pleines < 0:
+        retrait = min(abs(pleines), self.stock)  # Ne pas retirer plus que ce qui est dispo
+        self.stock -= retrait
+        message_pleines = f"{retrait} bouteilles pleines retirées."
+      else:
+        message_pleines = "Aucune modification de bouteilles pleines."
+
+      message_vides = f"{vides} bouteilles vides reçues (non stockées ici)."
+      return f"{message_pleines} {message_vides} Stock actuel : {self.stock}/{self.capacity}."
+
+
