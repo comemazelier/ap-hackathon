@@ -1,7 +1,7 @@
 class Camion:
-    def __init__(self, bouteilles_vides, bouteilles_pleines, x, y, id, v = 50, capacite = 80):
-        self._bouteilles_vides = bouteilles_vides
-        self._bouteilles_pleines = bouteilles_pleines
+    def __init__(self, b_vides, b_pleines, x, y, id, v = 50, capacite = 80):
+        self._b_vides = b_vides
+        self._b_pleines = b_pleines
         self._v = v
         self._x = x
         self._y = y
@@ -13,7 +13,7 @@ class Camion:
         self._etape_precedente = None
     
     def __repr__(self) :
-        return(f'Camion(x = {self._x}, y = {self._y}, déplacement = {self._deplacement}, bouteilles vides = {self._bouteilles_vides}, bouteilles pleines = {self._bouteilles_pleines})')
+        return(f'Camion(x = {self._x}, y = {self._y}, déplacement = {self._deplacement}, b vides = {self._b_vides}, b pleines = {self._b_pleines})')
 
     def get_data(self):
         return {
@@ -21,8 +21,8 @@ class Camion:
             "y": self._y,
             "v" : self._v,
             "capacite": self._capacite,
-            "bouteilles_pleines": self._bouteilles_pleines,
-            "bouteilles_vides": self._bouteilles_vides,
+            "b_pleines": self._b_pleines,
+            "b_vides": self._b_vides,
             "deplacement" : self._deplacement,
             "temps_deplacement": self._temps_deplacement,
             "id": self._id,
@@ -31,26 +31,26 @@ class Camion:
         }
 
     def capacite_actuelle(self) :
-            return self._capacite - (self._bouteilles_pleines + self._bouteilles_vides)
+            return self._capacite - (self._b_pleines + self._b_vides)
 
-    def charge(self, n, pleines:'bool'):
+    def charge(self, n, bouteilles : 'str'):
         if n <= self.capacite_actuelle() :
-            if pleines:
-                self._bouteilles_pleines = self._bouteilles_pleines + n
+            if bouteilles == 'p':
+                self._b_pleines = self._b_pleines + n
             else:
-                self._bouteilles_vides = self._bouteilles_vides + n
-        else:
+                self._b_vides = self._b_vides + n
+        elif bouteilles == 'v':
             return False
     
-    def decharge(self, n, pleines:'bool'):
-        if pleines:
-            if n <= self._bouteilles_pleines :
-                self._bouteilles_pleines = self._bouteilles_pleines - n
+    def decharge(self, n, bouteilles : 'str'):
+        if bouteilles == 'p':
+            if n <= self._b_pleines :
+                self._b_pleines = self._b_pleines - n
             else:
                 return False
-        else:
-            if n <= self._bouteilles_vides :
-                self._bouteilles_vides = self._bouteilles_vides - n
+        elif bouteilles == 'v':
+            if n <= self._b_vides :
+                self._b_vides = self._b_vides - n
             else:
                 return False
 
