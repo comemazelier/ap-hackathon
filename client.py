@@ -3,8 +3,8 @@ import pandas as pd
 
 class Client:
     def __init__(self, coord_x, coord_y, capacity, init, _consumption):
-        self._coord_x = int(coord_x)
-        self._coord_y = int(coord_y)
+        self._x = int(coord_x)
+        self._y = int(coord_y)
         self._capacity = int(capacity)
         self._bouteilles_vides = init
         self._bouteilles = init
@@ -14,15 +14,15 @@ class Client:
     
     def get_data(self):
         return {
-            "coord_x": self._coord_x,
-            "coord_y": self._coord_y,
+            "coord_x": self._x,
+            "coord_y": self._y,
             "capacity": self._capacity,
             "stock": self._bouteilles,
             "consumption": self._consumption
         }
     
     def __repr__(self):
-        return (f"Client(coord_x={self._coord_x}, coord_y={self._coord_y}, "
+        return (f"Client(coord_x={self._x}, coord_y={self._y}, "
                 f"capacity={self._capacity}, stock={self._bouteilles}, consumption={self._consumption})")
     
     def actualisation(self,dt):
