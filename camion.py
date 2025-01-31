@@ -4,7 +4,7 @@ class Camion:
         self._bouteilles_pleines = bouteilles_pleines
         self._position = position
         self._capacite = capacite
-        self._deplacement = deplacement
+        self._deplacement = deplacement #booléen pour savoir si le camion est en déplacement
         self._id = id
         self._temps_deplacement = 0
         self._trajet = []
