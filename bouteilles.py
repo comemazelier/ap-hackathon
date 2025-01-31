@@ -1,6 +1,11 @@
 import pandas as pd
+import numpy as np
 
+clients = pd.read_csv('clients.csv')
+plants = pd.read_csv('plants.csv')
 
+print(clients)
+print(plants)
 
 class Plant:
     def __init__(self, coord_x, coord_y, capacity, init, refill):
@@ -15,6 +20,9 @@ class Plant:
         return remplissage
     
 
-
-
-
+class Camions:
+    def __init__(self, bouteilles_vides, bouteilles_pleines, position):
+        self.bouteilles_vides = bouteilles_vides
+        self.bouteilles_pleines = bouteilles_pleines
+        self.position = position
+    
