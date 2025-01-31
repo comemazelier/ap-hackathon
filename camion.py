@@ -1,32 +1,26 @@
 class Camion:
-    def __init__(self, bouteilles_vides, bouteilles_pleines, position, deplacement, id, capacite = 80):
+    def __init__(self, bouteilles_vides, bouteilles_pleines, x, y, deplacement, id, capacite = 80):
         self._bouteilles_vides = bouteilles_vides
         self._bouteilles_pleines = bouteilles_pleines
-        self._position = position
+        self._x = x
+        self._y = y
         self._capacite = capacite
         self._deplacement = deplacement #booléen pour savoir si le camion est en déplacement
         self._id = id
         self._temps_deplacement = 0
         self._trajet = []
-        
-    @property
-    def bouteilles_vides(self):
-        return self._bouteilles_vides
-    
-    @property
-    def capacite_totale(self):
-        return self._capacite
-    
-    def capacite_actuelle(self):
-        return self._capacite - (self._bouteilles_vides + self._bouteilles_pleines)
-    
-    @property
-    def bouteilles_pleines(self):
-        return self.bouteilles_pleines
-    
-    @property
-    def position(self):
-        return self._position
+
+    def get_data(self):
+        return {
+            "x": self._x,
+            "y": self._y,
+            "capacite": self._capacite,
+            "bouteilles_pleines": self._bouteilles_pleines,
+            "bouteilles_vides": self._bouteilles_vides,
+            "deplacement" : self._deplacement,
+            "temps_deplacement": self._temps_deplacement,
+            "id": self._id,
+        }
 
     def charge(self, n, pleines:'bool'):
         if n <= self.capacite_actuelle():
@@ -54,6 +48,5 @@ class Camion:
         self._trajet.append(destination)
         self._temps_deplacement = duree
         
-    def  actualisation(self, dt):
+    def actualisation(self, dt):
         self._temps_deplacement = self._temps_deplacement - dt
-    
