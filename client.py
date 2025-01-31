@@ -1,11 +1,11 @@
 class Client:
-    def __init__(self, coord_x, coord_y, capacite, init, consumption):
+    def __init__(self, coord_x, coord_y, capacite, init, consumption, id):
         self._x = int(coord_x)
         self._y = int(coord_y)
         self._capacite = int(capacite)
         self._bouteilles_vides = init
-        self._bouteilles = init
         self._bouteilles_pleines = 0
+        self._id = id
         self._libre = True
         self._consumption = float(consumption)
     
@@ -14,8 +14,11 @@ class Client:
             "x": self._x,
             "y": self._y,
             "capacite": self._capacite,
-            "stock": self._bouteilles,
-            "consumption": self._consumption
+            "bouteilles_vides": self._bouteilles_vides,
+            "bouteilles pleines" : self._bouteilles_pleines,
+            "consumption": self._consumption,
+            "libre" : self._libre,
+            "id" : self._id
         }
     
     def __repr__(self):
@@ -26,15 +29,20 @@ class Client:
         self._bouteilles_pleines = max(0,self._bouteilles_pleines-dt*self._consumption)
         self._bouteilles_vides = self._bouteilles - self._bouteilles_pleines
     
-    def charge(self,n,m):
-        if n-m + self._bouteilles > self._capacity :
-            return False
-        elif self._bouteilles_vides - m < 0 :
-            return False
-        else : 
-            self._bouteilles += n-m
-            self._bouteilles_vides -= m
+    def capacite_actuelle(self):
+        return self._capacite - (self._bouteilles_vides + self._bouteilles_pleines)
+
+    def charge(self,n):
+        if n > self.capacite_actuelle() :
             self._bouteilles_pleines += n
+        else :
+            return False
+
+    def decharge(self, m):
+        if self._bouteilles_vides >= m :
+            self._bouteilles_vides -= m
+        else :
+            return False
 
     def change_libre(self) :
         self._libre = 1 - self._libre

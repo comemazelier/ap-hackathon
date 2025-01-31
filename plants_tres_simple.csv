@@ -1,3 +1,3 @@
 coord_y,coord_x,capacity,init,refill
-0,1,5,2,2
-3.5,5,5,2,2
+0,1,5,2,24000
+3,5,5,2,24000
