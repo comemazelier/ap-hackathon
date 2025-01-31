@@ -39,3 +39,25 @@ class Flotte :
             camion._temps_deplacement = np.min(distance)/50
             clients_libres[np.argmin(distance)]._libre = not clients_libres[np.argmin(distance)]._libre
 
+    def plot_flotte(self):
+        plt.figure(figsize=(10, 10))
+
+        for client in self.clients:
+            plt.scatter(client._coord_x, client._coord_y, color='blue', marker='o', label="Client" if "Client" not in plt.gca().get_legend_handles_labels()[1] else "")
+
+        for plant in self.plants:
+            plt.scatter(plant._coord_x, plant.coord_y, color='red', marker='s', label="Usine" if "Usine" not in plt.gca().get_legend_handles_labels()[1] else "")
+
+        for camion in self.camions:
+            if camion._trajet:
+                trajet_x = [pos[0] for pos in camion._trajet]
+                trajet_y = [pos[1] for pos in camion._trajet]
+                plt.plot(trajet_x, trajet_y, linestyle='--', marker='x', label=f'Camion {camion._id}')
+
+        plt.xlabel('Coordonnée X')
+        plt.ylabel('Coordonnée Y')
+        plt.title('Carte des Clients, Usines et Trajets des Camions')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
