@@ -1,5 +1,5 @@
 class Camion:
-    def __init__(self, bouteilles_vides, bouteilles_pleines, position, capacite = 80, deplacement, id):
+    def __init__(self, bouteilles_vides, bouteilles_pleines, position, deplacement, id, capacite = 80):
         self._bouteilles_vides = bouteilles_vides
         self._bouteilles_pleines = bouteilles_pleines
         self._position = position
