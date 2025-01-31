@@ -22,7 +22,7 @@ class Client:
         return (f"Client(coord_x={self.coord_x}, coord_y={self.coord_y}, "
                 f"capacity={self.capacity}, stock={self.stock}, consumption={self.consumption})")
     
-    def __evol_stock__(t, self):
+    #def __evol_stock__(t, self):
         
 
         
