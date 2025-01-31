@@ -29,26 +29,25 @@ class Flotte :
             x_camion, y_camion = camion.coord_x(), camion.coord_y()
             distance = []
             if camion._bouteilles_pleines > 0 :
-                clients_libres = [client for client in self.clients if client._libre]
+                clients_libres = [client for client in self.clients if client.get_data()['libre']]
                 for client in clients_libres:
                     client_dict = client.get_data()
                     x_client, y_client = client_dict['x'], client_dict['y']
                     dist = np.sqrt( (x_client - x_camion)**2 + (y_client - y_camion)**2  )
                     distance.append(dist)
-                camion.position = clients_libres[np.argmin(distance)]
-                camion.deplacement = not camion.deplacement
-                camion._temps_deplacement = np.min(distance)/50
-                clients_libres[np.argmin(distance)]._libre = not clients_libres[np.argmin(distance)]._libre
+                client = clients_libres[np.argmin(distance)]
+                camion.deplacement(client.get_data()['x'], client.get_data()['y'], min(distance)/camion.get_data()['v'])
+                client.change_libre()
             else :
-                usines_libres = [usine for usine in self.usines if usine._libre]
+                usines_libres = [usine for usine in self.usines if usine.get_data()['libre']]
                 for usine in usines_libres:
-                    x_usine, y_usine = usine.coord_x(), usine.coord_y()
+                    usine_dict = usine.get_data()
+                    x_usine, y_usine = usine_dict['x'], usine_dict['y']
                     dist = np.sqrt( (x_usine - x_camion)**2 + (y_usine - y_camion)**2  )
                     distance.append(dist)
-                camion.position = usines_libres[np.argmin(distance)]
-                camion.deplacement = not camion.deplacement
-                camion._temps_deplacement = np.min(distance)/50
-                usines_libres[np.argmin(distance)]._libre = not usines_libres[np.argmin(distance)]._libre
+                usine = usines_libres[np.argmin(distance)]
+                camion.deplacement(client.get_data()['x'], client.get_data()['y'], min(distance)/camion.get_data()['v'])
+                usine.change_libre()
 
     def plot_flotte(self):
         plt.figure(figsize=(10, 10))

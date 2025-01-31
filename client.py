@@ -1,22 +1,19 @@
-
-import pandas as pd
-
 class Client:
-    def __init__(self, coord_x, coord_y, capacity, init, _consumption):
+    def __init__(self, coord_x, coord_y, capacite, init, consumption):
         self._x = int(coord_x)
         self._y = int(coord_y)
-        self._capacity = int(capacity)
+        self._capacite = int(capacite)
         self._bouteilles_vides = init
         self._bouteilles = init
         self._bouteilles_pleines = 0
         self._libre = True
-        self._consumption = float(_consumption)
+        self._consumption = float(consumption)
     
     def get_data(self):
         return {
-            "coord_x": self._x,
-            "coord_y": self._y,
-            "capacity": self._capacity,
+            "x": self._x,
+            "y": self._y,
+            "capacite": self._capacite,
             "stock": self._bouteilles,
             "consumption": self._consumption
         }
@@ -38,26 +35,6 @@ class Client:
             self._bouteilles += n-m
             self._bouteilles_vides -= m
             self._bouteilles_pleines += n
-               
 
-
-
-class ClientsList:
-    def __init__(self, filename):
-        self.clients = self.load_clients(filename)
-    
-    def load_clients(self, filename):
-        clients = []
-        df = pd.read_csv(filename)  
-        for _, row in df.iterrows(): 
-            clients.append(Client(row["coord_x"], row["coord_y"], row["capacity"], row["init"], row["_consumption"]))
-        return clients
-    
-    def get_all_clients_data(self):
-        return [client.get_data() for client in self.clients]
-    
-    def __repr__(self):
-        return f"ClientsList({self.clients})"
-
-clients_list = ClientsList("clients.csv")
-print(clients_list.get_all_clients_data())
+    def change_libre(self) :
+        self._libre = 1 - self._libre

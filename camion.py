@@ -1,7 +1,8 @@
 class Camion:
-    def __init__(self, bouteilles_vides, bouteilles_pleines, x, y, deplacement, id, capacite = 80):
+    def __init__(self, bouteilles_vides, bouteilles_pleines, x, y, deplacement, id, v = 50, capacite = 80):
         self._bouteilles_vides = bouteilles_vides
         self._bouteilles_pleines = bouteilles_pleines
+        self._v = v
         self._x = x
         self._y = y
         self._capacite = capacite
@@ -14,6 +15,7 @@ class Camion:
         return {
             "x": self._x,
             "y": self._y,
+            "v" : self._v,
             "capacite": self._capacite,
             "bouteilles_pleines": self._bouteilles_pleines,
             "bouteilles_vides": self._bouteilles_vides,
@@ -43,9 +45,10 @@ class Camion:
             else:
                 return False
 
-    def deplacement(self, destination, duree):
-        self._position = destination
-        self._trajet.append(destination)
+    def deplacement(self, x, y, duree):
+        self._x= x
+        self._y = y
+        self._trajet.append((x,y))
         self._temps_deplacement = duree
         
     def actualisation(self, dt):

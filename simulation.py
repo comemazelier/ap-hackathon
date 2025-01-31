@@ -27,5 +27,8 @@ for _,row in df_plants.ierrows():
     plants.append(Plant(row["coord_x"], row["coord_y"], row["capacity"], row["capacity"], row["init"], row["refill"], row["libre"] ))
 
 flotte = Flotte(clients, plants)
-flotte.plot_flotte()    
+flotte.calcul_destinations()
+flotte.plot_flotte()
+
+
 
