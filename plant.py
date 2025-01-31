@@ -1,10 +1,11 @@
 class Plant:
-    def __init__(self, coord_x, coord_y, capacite, init, refill):
-        self.coord_x = coord_x
+    def __init__(self, coord_x, coord_y, capacite, init, refill, libre):
+        self._coord_x = coord_x
         self.coord_y = coord_y  # Stocke la position sous forme de tuple (x, y)
-        self.capacite = capacite         # Capacité maximale de l’usine
-        self.bouteilles_pleines = init                # Nombre actuel de bouteilles pleines en stock
-        self.bouteilles_vides = refill             # Nombre de bouteilles pouvant être remplies par jour
+        self._capacite = capacite         # Capacité maximale de l’usine
+        self._bouteilles_pleines = init                # Nombre actuel de bouteilles pleines en stock
+        self._bouteilles_vides = refill             # Nombre de bouteilles pouvant être remplies par jour
+        self.libre = libre
         
     
     def remplir_bouteilles(self, quantite): #remplir un certain nombre de bouteilles jusqu’à la capacité de l’usine.
