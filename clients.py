@@ -23,9 +23,7 @@ class Client:
                 f"capacity={self.capacity}, stock={self.stock}, consumption={self.consumption})")
     
     def __evol_stock__(t, self):
-        
-
-        
+        pass        
 
 
 
