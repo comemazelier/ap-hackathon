@@ -8,30 +8,67 @@ class Client:
         self._id = id
         self._libre = True
         self._consommation = float(consumption)/24 #Consommation horaire
+        self._plein = False
+
+    @property
+    def x(self) :
+        return self._x
+    @property
+    def y(self) :
+        return self._y
+
+    @property
+    def capacite(self) :
+        return self._capacite
     
-    def get_data(self):
-        return {
-            "x": self._x,
-            "y": self._y,
-            "capacite": self._capacite,
-            "b_vides": self._b_vides,
-            "b_pleines" : self._b_pleines,
-            "consommation": self._consommation,
-            "libre" : self._libre,
-            "id" : self._id
-        }
+    @property
+    def b_pleines(self) :
+        return self._b_pleines
+    
+    @property
+    def b_vides(self) :
+            return self._b_vides
+    
+    @property
+    def libre(self) :
+        return self._libre
+    
+    @property
+    def id(self) :
+        return self._id
+    
+    @property
+    def consommation(self) :
+        return self._consommation
+
+    @property
+    def plein(self) :
+        self._plein = (self._b_pleines == self._capacite)
+        return self._plein
+    
+    # def get_data(self):
+    #     return {
+    #         "x": self._x,
+    #         "y": self._y,
+    #         "capacite": self._capacite,
+    #         "b_vides": self._b_vides,
+    #         "b_pleines" : self._b_pleines,
+    #         "consommation": self._consommation,
+    #         "libre" : self._libre,
+    #         "id" : self._id
+    #     }
     
     def __repr__(self):
         return (f"Client(x = {self._x}, y = {self._y}",
                 f"capacité = {self._capacite}, b pleines = {self._b_pleines}, consumption = {self._consumption})")
-    
+
     def actualisation(self, dt):
-        b_consommees = min(self._b_pleines, dt*self._consommation/24)
+        b_consommees = min(self._b_pleines, dt*self._consommation)
         self._b_pleines -= b_consommees
         self._b_vides += b_consommees
     
     def capacite_actuelle(self):
-        return self._capacite - (self._b_vides + self._b_pleines)
+        return max(self._capacite - (self._b_vides + self._b_pleines), 0)
 
     def charge(self, n):
         if n <= self.capacite_actuelle() :

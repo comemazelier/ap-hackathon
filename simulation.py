@@ -31,13 +31,13 @@ for _,row in df_plants.iterrows():
     plants.append(Usine(row["coord_x"], row["coord_y"], row["capacity"], row["init"], row["refill"], id))
     id += 1
 
-camions = [Camion(b_pleines = 2, b_vides = 2, x = 3, y = 0, id = 1)]
+camions = [Camion(b_pleines = 0, b_vides = 0, x = 3, y = 0, id = 1), Camion(b_pleines = 0, b_vides = 0, x = 3, y = 0, id = 2)]
 
 flotte = Flotte(clients, plants, camions)
 for i in range(10):
     flotte.calcul_destinations()
 print(flotte.camions_stationnes)
-print(flotte.camions[0].get_data()['trajet'])
+print(flotte.camions[0].trajet)
 flotte.plot_trajet()
 
 

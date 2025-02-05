@@ -6,32 +6,77 @@ class Camion:
         self._x = x
         self._y = y
         self._capacite = capacite
-        self._deplacement = False #booléen pour savoir si le camion est en déplacement
+        self._stationne = True #booléen pour savoir si le camion est en déplacement
         self._id = id
         self._temps_deplacement = 0
         self._trajet = [(x,y)]
         self._etape_precedente = None
     
     def __repr__(self) :
-        return(f'Camion(x = {self._x}, y = {self._y}, déplacement = {self._deplacement}, b vides = {self._b_vides}, b pleines = {self._b_pleines})')
+        return(f'Camion(x = {self._x}, y = {self._y}, déplacement = {self._stationne}, b vides = {self._b_vides}, b pleines = {self._b_pleines})')
 
-    def get_data(self):
-        return {
-            "x": self._x,
-            "y": self._y,
-            "v" : self._v,
-            "capacite": self._capacite,
-            "b_pleines": self._b_pleines,
-            "b_vides": self._b_vides,
-            "deplacement" : self._deplacement,
-            "temps_deplacement": self._temps_deplacement,
-            "id": self._id,
-            "trajet" : self._trajet,
-            "etape_precedente" : self._etape_precedente
-        }
+    @property
+    def x(self) :
+        return self._x
+    
+    @property
+    def y(self) :
+        return self._y
+    
+    @property
+    def v(self) :
+        return self._v
+    
+    @property
+    def capacite(self) :
+        return self._capacite
+    
+    @property
+    def b_pleines(self) :
+        return self._b_pleines
+    
+    @property
+    def b_vides(self) :
+            return self._b_vides
+    
+    @property
+    def stationne(self) :
+        return self._stationne
+    
+    @property
+    def id(self) :
+        return self._id
+    
+    @property
+    def trajet(self) :
+        return self._trajet
+    
+    @property
+    def temps_deplacement(self) :
+        return self._temps_deplacement
+    
+    @property
+    def etape_precedente(self) :
+        return self._etape_precedente
+    
+    
+    # def get_data(self):
+    #     return {
+    #         "x": self._x,
+    #         "y": self._y,
+    #         "v" : self._v,
+    #         "capacite": self._capacite,
+    #         "b_pleines": self._b_pleines,
+    #         "b_vides": self._b_vides,
+    #         "deplacement" : self._deplacement,
+    #         "temps_deplacement": self._temps_deplacement,
+    #         "id": self._id,
+    #         "trajet" : self._trajet,
+    #         "etape_precedente" : self._etape_precedente
+    #     }
 
     def capacite_actuelle(self) :
-            return self._capacite - (self._b_pleines + self._b_vides)
+            return max(self._capacite - (self._b_pleines + self._b_vides), 0)
 
     def charge(self, n, bouteilles : 'str'):
         if n <= self.capacite_actuelle() :
@@ -59,6 +104,7 @@ class Camion:
         self._y = y
         self._trajet.append((x,y))
         self._temps_deplacement = duree
+        self._stationne = False
 
     def set_etape_precedente(self, type : 'str', id : 'int') :
         self._etape_precedente = [type, id]

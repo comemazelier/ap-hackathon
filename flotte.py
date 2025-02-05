@@ -19,130 +19,134 @@ class Flotte :
     def actualisation(self) :
         duree_min = float('inf')
         camions_arrives = []
+        camions_pas_arrives = []
         for camion in self.camions_en_deplacement :
-            tps_restant =  camion.get_data()['temps_deplacement']
+            tps_restant =  camion.temps_deplacement
             if tps_restant < duree_min :
                 duree_min = tps_restant
+                camions_pas_arrives = camions_pas_arrives + camions_arrives
                 camions_arrives = [camion]
             elif tps_restant == duree_min :
                 camions_arrives.append(camion)
+            else :
+                camions_pas_arrives.append(camion)
+        self.camions_stationnes = self.camions_stationnes + camions_arrives
+        self.camions_en_deplacement = camions_pas_arrives
         print(f'duree_min = {duree_min}')
         for camion in self.camions_en_deplacement :
             camion.actualisation(duree_min)
         for client in self.clients :
             client.actualisation(duree_min)
         for usine in self.usines :
+            b_pleines_avant = usine.b_pleines
             usine.actualisation(duree_min)
+            self.profit -= 40*(usine.b_pleines - b_pleines_avant)
         self._time += duree_min
 
     def id_to_object(self, type : 'str', id : 'int') :
         if type == 'c' :
             for client in self.clients :
-                if client.get_data()['id'] == id :
+                if client.id == id :
                     return client
         elif type == 'u' :
             for usine in self.usines :
-                if usine.get_data()['id'] == id :
+                if usine.id == id :
                     return usine
+
+    @staticmethod
+    def distance(objet1, objet2) :
+        x1, y1, x2, y2 = objet1.x, objet1.y, objet2.x, objet2.y
+        return np.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+
 
     def calcul_destinations(self) :
         if self._etape > 0 :
             self.actualisation()
-        print(f'Etape {self._etape}')
-        print(f'Bouteilles pleines dans les usines : {[usine.get_data()['b_pleines'] for usine in self.usines]}')
-        print(f'Bouteilles vides dans les usines : {[usine.get_data()['b_vides'] for usine in self.usines]}')
-        print(f'Bouteilles pleines dans les clients : {[client.get_data()['b_pleines'] for client in self.clients]}')
-        print(f'Bouteilles vides dans les clients : {[client.get_data()['b_vides'] for client in self.clients]}')
-        print('Camion : ', [f': (Pleines : {camion.get_data()['b_pleines']}, vides : {camion.get_data()['b_vides']}' for camion in self.camions])
-        print('\n')
+        camions_stationnes_2 = []
         for camion in self.camions_stationnes :
-            camion_dict = camion.get_data()
-            x_camion, y_camion = camion_dict['x'], camion_dict['y']
-            distance = []
-            if camion_dict['b_pleines'] > 0 :
-                clients_libres = [client for client in self.clients if client.get_data()['libre']]
-                for client in clients_libres:
-                    client_dict = client.get_data()
-                    x_client, y_client = client_dict['x'], client_dict['y']
-                    dist = np.sqrt( (x_client - x_camion)**2 + (y_client - y_camion)**2  )
-                    distance.append(dist)
-                client = clients_libres[np.argmin(distance)]
-                camion.deplacement(client.get_data()['x'], client.get_data()['y'], min(distance)/camion.get_data()['v'])
+            distances = []
+            clients_a_servir = [client for client in self.clients if (client.libre and not client.plein)]
+            if camion.b_pleines > 0 and len(clients_a_servir) > 0 :
+                for client in clients_a_servir:
+                    distances.append(self.distance(client, camion))
+                client = clients_a_servir[np.argmin(distances)]
+                camion.deplacement(client.x, client.y, min(distances)/camion.v)
                 self.echange_client(camion, client)
                 client.change_libre()
-                camion.set_etape_precedente('c', client.get_data()['id'])
-                point_de_depart = camion_dict['etape_precedente']
+                camion.set_etape_precedente('c', client.id)
+                point_de_depart = camion.etape_precedente
                 if  point_de_depart != None :
                     self.id_to_object(point_de_depart[0], point_de_depart[1]).change_libre()
-            else :
-                usines_libres = [usine for usine in self.usines if usine.get_data()['libre']]
-                for usine in usines_libres:
-                    usine_dict = usine.get_data()
-                    x_usine, y_usine = usine_dict['x'], usine_dict['y']
-                    dist = np.sqrt( (x_usine - x_camion)**2 + (y_usine - y_camion)**2  )
-                    distance.append(dist)
-                usine = usines_libres[np.argmin(distance)]
-                camion.deplacement(usine.get_data()['x'], usine.get_data()['y'], min(distance)/camion.get_data()['v'])
+                self.camions_en_deplacement.append(camion)
+            elif camion.b_pleines < camion.capacite :
+                for usine in self.usines:
+                    dist = np.sqrt((usine.x - camion.x)**2 + (usine.y - camion.y)**2)
+                    distances.append(dist)
+                usine = self.usines[np.argmin(distances)]
+                camion.deplacement(usine.x, usine.y, min(distances)/camion.v)
                 self.echange_usine(camion, usine)
-                usine.change_libre()
-                camion.set_etape_precedente('u', usine.get_data()['id'])
-                point_de_depart = camion_dict['etape_precedente']
+                camion.set_etape_precedente('u', usine.id)
+                point_de_depart = camion.etape_precedente
                 if  point_de_depart != None :
                     self.id_to_object(point_de_depart[0], point_de_depart[1]).change_libre()
-            self.camions_en_deplacement.append(camion)
-        self._etape += 1 
+                self.camions_en_deplacement.append(camion)
+            else :
+                camions_stationnes_2.append(camion)
+        self._etape += 1
+        self.camions_stationnes = camions_stationnes_2
+        print(f'Etape {self._etape}')
+        print(f'Bouteilles pleines dans les usines : {[usine.b_pleines for usine in self.usines]}')
+        print(f'Bouteilles vides dans les usines : {[usine.b_vides for usine in self.usines]}')
+        print(f'Bouteilles pleines dans les clients : {[client.b_pleines for client in self.clients]}')
+        print(f'Bouteilles vides dans les clients : {[client.b_vides for client in self.clients]}')
+        print([f'Camion {camion.id} : pleines : {camion.b_pleines}, vides : {camion.b_vides}, dernière étape : {camion.etape_precedente}' for camion in self.camions])
+        print('\n')
 
-    @staticmethod
-    def echange_client(camion : 'Camion', client : 'Client'):
-        camion_dict = camion.get_data()
-        client_dict = client.get_data()
-        echange = min(camion_dict['b_pleines'], client_dict['b_vides'])
+    def echange_client(self, camion : 'Camion', client : 'Client'):
+        echange = min(camion.b_pleines, client.b_vides)
         camion.decharge(echange, 'p')
         camion.charge(echange, 'v')
         client.decharge(echange)
         client.charge(echange)
-        if client.capacite_actuelle() > 0 and camion_dict['b_pleines'] > 0 :
-            echange = min(client.capacite_actuelle(), camion_dict['b_pleines'])
+        self.profit += echange*60
+        if client.capacite_actuelle() > 0 and camion.b_pleines > 0 :
+            echange = min(client.capacite_actuelle(), camion.b_pleines)
+            self.profit += echange*60
             camion.decharge(echange, 'p')
             client.charge(echange)
-        elif camion.capacite_actuelle() > 0 and client_dict['b_vides'] > 0 :
-            echange = min(camion.capacite_actuelle(), client_dict['b_vides'])
+        elif camion.capacite_actuelle() > 0 and client.b_vides > 0 :
+            echange = min(camion.capacite_actuelle(), client.b_vides)
             camion.charge(echange, 'v')
             client.decharge(echange)
 
     @staticmethod
     def echange_usine(camion : 'Camion', usine : 'Usine'):
-        camion_dict = camion.get_data()
-        usine_dict = usine.get_data()
-        echange = min(camion_dict['b_vides'], usine_dict['b_pleines'])
+        echange = min(camion.b_vides, usine.b_pleines)
         camion.decharge(echange, 'v')
         camion.charge(echange, 'p')
         usine.decharge(echange)
         usine.charge(echange)
-        if usine.capacite_actuelle() > 0 and camion_dict['b_vides'] > 0 :
-            echange = min(usine.capacite_actuelle(), camion_dict['b_vides'])
+        if usine.capacite_actuelle() > 0 and camion.b_vides > 0 :
+            echange = min(usine.capacite_actuelle(), camion.b_vides)
             camion.decharge(echange, 'v')
             usine.charge(echange)
-        elif camion.capacite_actuelle() > 0 and usine_dict['b_pleines'] > 0 :
-            echange = min(camion.capacite_actuelle(), usine_dict['b_pleines'])
+        elif camion.capacite_actuelle() > 0 and usine.b_pleines > 0 :
+            echange = min(camion.capacite_actuelle(), usine.b_pleines)
             camion.charge(echange, 'p')
             usine.decharge(echange)
 
     def plot_trajet(self) :
         for client in self.clients:
-            client_dict = client.get_data()
-            plt.scatter(client_dict['x'], client_dict['y'], color='blue', marker='o')
+            plt.scatter(client.x, client.y, color='blue', marker='o')
 
         for plant in self.usines:
-            plant_dict = plant.get_data()
-            plt.scatter(plant_dict['x'], plant_dict['y'], color='red', marker='s')
+            plt.scatter(plant.x, plant.y, color='red', marker='s')
 
         for camion in self.camions:
             if camion._trajet:
-                camion_dict = camion.get_data()
-                trajet_x = [pos[0] for pos in camion_dict['trajet']]
-                trajet_y = [pos[1] for pos in camion_dict['trajet']]
-                plt.plot(trajet_x, trajet_y, linestyle='--', marker='x', label=f'Camion {camion_dict['id']}')
+                trajet_x = [pos[0] for pos in camion.trajet]
+                trajet_y = [pos[1] for pos in camion.trajet]
+                plt.plot(trajet_x, trajet_y, linestyle='--', marker='x', label=f'Camion {camion.id}')
 
         plt.xlabel('Coordonnée X')
         plt.ylabel('Coordonnée Y')
