@@ -59,7 +59,7 @@ class Usine:
 
   def actualisation(self, dt): #remplir un certain nombre de b jusqu’à la capacité de l’usine.
       b_produites = min(self.capacite_actuelle(), dt*self._production, self._b_vides)
-      print(f'Usine {self._id} : capacite actuelle = {self.capacite_actuelle()}, prod = {dt*self._production}, b_produites = {b_produites}')
+    #   print(f'Usine {self._id} : capacite actuelle = {self.capacite_actuelle()}, prod = {dt*self._production}, b_produites = {b_produites}')
       self._b_vides -= b_produites
       self._b_pleines += b_produites
 

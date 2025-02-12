@@ -8,7 +8,9 @@ class Client:
         self._id = id
         self._libre = True
         self._consommation = float(consumption)/24 #Consommation horaire
-        self._plein = False
+    
+    def __repr__(self):
+        return (f"Client(x = {self._x}, y = {self._y}, capacité = {self._capacite}, b pleines = {self._b_pleines}, consumption = {self._consommation}, libre = {self._libre})")
 
     @property
     def x(self) :
@@ -40,11 +42,6 @@ class Client:
     @property
     def consommation(self) :
         return self._consommation
-
-    @property
-    def plein(self) :
-        self._plein = (self._b_pleines == self._capacite)
-        return self._plein
     
     # def get_data(self):
     #     return {
@@ -57,10 +54,6 @@ class Client:
     #         "libre" : self._libre,
     #         "id" : self._id
     #     }
-    
-    def __repr__(self):
-        return (f"Client(x = {self._x}, y = {self._y}",
-                f"capacité = {self._capacite}, b pleines = {self._b_pleines}, consumption = {self._consumption})")
 
     def actualisation(self, dt):
         b_consommees = min(self._b_pleines, dt*self._consommation)
@@ -85,4 +78,4 @@ class Client:
             return False
 
     def change_libre(self) :
-        self._libre = 1 - self._libre
+        self._libre = not self._libre
